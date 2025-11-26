@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "faststream>=0.6.3",
+    "faststream[nats]>=0.6.3",
+    "msgspec>=0.20.0",
     "pydantic-settings>=2.12.0",
 ]

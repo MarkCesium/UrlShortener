@@ -15,6 +15,7 @@ async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
 
 
 def create_app() -> Litestar:
+    from src.api.controllers.index import index
     from src.api.controllers.url import URLController
     from src.core.config import settings
     from litestar.openapi.config import OpenAPIConfig
@@ -22,7 +23,7 @@ def create_app() -> Litestar:
 
     return Litestar(
         debug=settings.app.debug,
-        route_handlers=[URLController],
+        route_handlers=[index, URLController],
         plugins=[database_plugin],
         lifespan=[lifespan],
         openapi_config=OpenAPIConfig(

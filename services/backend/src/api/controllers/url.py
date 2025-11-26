@@ -23,7 +23,7 @@ class URLController(Controller):
             raise NotFoundException(f"URL with slug: {slug} not found")
         return Redirect(url.original_url, status_code=status_codes.HTTP_302_FOUND)
 
-    @post("/")
+    @post("/shorten")
     async def create(
         self, data: URLCreate, service: URLService, broker: BrokerService
     ) -> URLRead:

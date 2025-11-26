@@ -15,7 +15,7 @@ class URLCreate(URLBase):
 
 class URLRead(URLBase):
     id: int
-    active: bool
     slug: str
     created_at: datetime
     updated_at: datetime
+    is_active: bool = True

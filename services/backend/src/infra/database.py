@@ -11,6 +11,7 @@ def get_db_plugin(config: PostgresConfig) -> SQLAlchemyPlugin:
     return SQLAlchemyPlugin(
         SQLAlchemyAsyncConfig(
             create_all=True,
+            before_send_handler="autocommit",
             engine_config=EngineConfig(
                 echo=config.echo,
                 echo_pool=config.echo_pool,
@@ -19,12 +20,10 @@ def get_db_plugin(config: PostgresConfig) -> SQLAlchemyPlugin:
                 pool_pre_ping=config.pool_pre_ping,
                 pool_timeout=config.pool_timeout,
             ),
-            session_config=AsyncSessionConfig(
-                autoflush=False,
-                expire_on_commit=False,
-            ),
             connection_string=str(config.url),
+            session_config=AsyncSessionConfig(expire_on_commit=False),
         ),
     )
+
 
 database_plugin = get_db_plugin(settings.database)

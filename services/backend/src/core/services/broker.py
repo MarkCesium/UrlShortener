@@ -1,6 +1,8 @@
-import orjson
+import logging
 from faststream.nats import NatsBroker
-from msgspec import Struct
+from msgspec import Struct, json
+
+logger = logging.getLogger(__name__)
 
 
 class Slug(Struct):
@@ -12,6 +14,10 @@ class BrokerService:
         self.broker = broker
 
     async def get_slug(self) -> str:
-        msg = await self.broker.request(None, "get.slug")
-        schema = Slug(**orjson.loads(msg.body))
-        return schema.slug
+        try:
+            msg = await self.broker.request(None, "slug.get")
+            schema = json.decode(msg.body, type=Slug)
+            return schema.slug
+        except Exception as e:
+            logger.exception(e)
+            raise e

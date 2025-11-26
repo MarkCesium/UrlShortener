@@ -6,11 +6,13 @@ from litestar import Litestar
 from src.infra.broker import init_broker, stop_broker
 from src.infra.database import database_plugin
 
+
 @asynccontextmanager
 async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
     await init_broker()
     yield
     await stop_broker()
+
 
 def create_app() -> Litestar:
     from src.api.controllers.url import URLController
@@ -30,5 +32,6 @@ def create_app() -> Litestar:
             render_plugins=[SwaggerRenderPlugin()],
         ),
     )
+
 
 app = create_app()

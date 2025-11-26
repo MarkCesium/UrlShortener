@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "advanced-alchemy>=1.8.0",
+    "asyncpg>=0.31.0",
     "faststream[nats]>=0.6.3",
+    "hypercorn>=0.18.0",
     "litestar>=2.18.0",
     "orjson>=3.11.4",
     "pydantic-settings>=2.12.0",

@@ -33,8 +33,10 @@ class PostgresConfig(BaseModel):
     pool_pre_ping: bool = True
     pool_timeout: int = 30
 
+
 class NatsConfig(BaseModel):
     url: str
+
 
 class AppConfig(BaseModel):
     debug: bool = False

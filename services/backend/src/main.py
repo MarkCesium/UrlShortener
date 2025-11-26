@@ -1,22 +1,34 @@
+from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
+
 from litestar import Litestar
 
-from src.api.controllers.url import URLController
-from src.infra.broker import broker
-from src.infra.database import get_db_plugin
-from src.core.config import settings
+from src.infra.broker import init_broker, stop_broker
+from src.infra.database import database_plugin
 
-async def startup(app: Litestar):
-    await broker.start()
-    app.state.broker
+@asynccontextmanager
+async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
+    await init_broker()
+    yield
+    await stop_broker()
 
-async def shutdown(app: Litestar):
-    await broker.stop()
+def create_app() -> Litestar:
+    from src.api.controllers.url import URLController
+    from src.core.config import settings
+    from litestar.openapi.config import OpenAPIConfig
+    from litestar.openapi.plugins import SwaggerRenderPlugin
 
-app = Litestar(
-    route_handlers=[
-        URLController,
-    ],
-    plugins=[get_db_plugin(settings.database)],
-    on_startup=[startup],
-    on_shutdown=[shutdown],
-)
+    return Litestar(
+        debug=settings.app.debug,
+        route_handlers=[URLController],
+        plugins=[database_plugin],
+        lifespan=[lifespan],
+        openapi_config=OpenAPIConfig(
+            title="Litestar Example",
+            description="Example of litestar",
+            version="0.0.1",
+            render_plugins=[SwaggerRenderPlugin()],
+        ),
+    )
+
+app = create_app()

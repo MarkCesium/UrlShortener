@@ -2,11 +2,12 @@ import orjson
 from faststream.nats import NatsBroker
 from msgspec import Struct
 
+
 class Slug(Struct):
     slug: str
 
 
-class BrokerService():
+class BrokerService:
     def __init__(self, broker: NatsBroker):
         self.broker = broker
 

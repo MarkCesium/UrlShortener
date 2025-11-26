@@ -1,0 +1,63 @@
+services:
+  database:
+    container_name: urlshortener-database
+    image: postgres:17-bookworm
+    environment: 
+      POSTGRES_USER: urlshortener
+      POSTGRES_PASSWORD: urlpassword123
+      POSTGRES_DB: urlshortener
+    networks:
+      - urlshortener
+    ports:
+      - 5432:5432
+    volumes:
+      - ./var/postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urlshortener"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  nats:
+    image: nats:latest
+    container_name: urlshortener-nats
+    networks:
+      - urlshortener
+    ports:
+      - "4222:4222"
+    volumes:
+      - ./var/nats:/data
+    command: >
+      --jetstream
+      --store_dir=/data
+
+  backend:
+    container_name: urlshortener-backend
+    depends_on:
+      - database
+      - nats
+    networks:
+      - urlshortener
+    volumes:
+      - ./var/backend:/backend/var/app
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile 
+    ports:
+      - 8000:8000
+
+  generator:
+    container_name: urlshortener-generator
+    depends_on:
+      - nats
+    networks:
+      - urlshortener
+    volumes:
+      - ./var/generator:/generator/var/app
+    build:
+      context: ./services/generator
+      dockerfile: Dockerfile 
+
+networks:
+  urlshortener:
+    driver: bridge

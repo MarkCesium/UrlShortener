@@ -46,12 +46,23 @@ services:
     ports:
       - 8000:8000
 
+  redis:
+    container_name: urlshortener-redis
+    image: redis:bookworm
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./var/redis:/data
+    networks:
+      - redis-network
+
   generator:
     container_name: urlshortener-generator
     depends_on:
       - nats
     networks:
       - urlshortener
+      - redis-network
     volumes:
       - ./var/generator:/generator/var/app
     build:
@@ -60,4 +71,6 @@ services:
 
 networks:
   urlshortener:
+    driver: bridge
+  redis-network:
     driver: bridge

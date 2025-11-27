@@ -1,12 +1,14 @@
 from typing import Annotated
 
 from faststream import Depends
+from redis.asyncio import Redis
 
-from src.core.services.slug import SlugService
-
-
-async def get_slug_service() -> SlugService:
-    return SlugService()
+from src.core.services.slug import get_slug
+from src.infra.redis import get_redis
 
 
-SlugServiceDep = Annotated[SlugService, Depends(get_slug_service)]
+async def get_slug_dep(redis: Redis = Depends(get_redis)) -> str:
+    return await get_slug(redis)
+
+
+SlugDep = Annotated[str, Depends(get_slug_dep)]

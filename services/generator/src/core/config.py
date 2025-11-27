@@ -1,6 +1,6 @@
 import logging
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, RedisDsn
 from pydantic_settings import BaseSettings
 from pathlib import Path
 
@@ -31,9 +31,16 @@ class NatsConfig(BaseModel):
     url: str
 
 
+class RedisConfig(BaseModel):
+    url: RedisDsn
+    pool_size: int = 1000
+    batch_size: int = 2000
+
+
 class Settings(BaseSettings):
     app: AppConfig
     broker: NatsConfig
+    redis: RedisConfig
     logging: LoggingConfig
 
     class Config:

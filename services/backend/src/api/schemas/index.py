@@ -1,5 +1,6 @@
 from msgspec import Struct
 
+
 class Index(Struct):
     name: str
     author: str

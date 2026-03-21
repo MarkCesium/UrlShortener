@@ -8,6 +8,9 @@ services:
       - "4222:4222"
 
   backend:
+    build:
+      context: ./services/backend
+      dockerfile: Dockerfile.dev
     volumes:
       - ./services/backend/src:/backend/src
       - ./var/backend:/backend/var/app
@@ -17,6 +20,9 @@ services:
       - "6379:6379"
 
   generator:
+    build:
+      context: ./services/generator
+      dockerfile: Dockerfile.dev
     volumes:
       - ./services/generator/src:/generator/src
       - ./var/generator:/generator/var/app

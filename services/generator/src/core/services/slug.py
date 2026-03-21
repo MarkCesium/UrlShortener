@@ -20,7 +20,7 @@ class SlugGenerator:
 
 
 async def is_pool_full(redis: Redis) -> bool:
-    size = await redis.scard("slug")  # type: ignore
+    size: int = await redis.scard("slug")  # type: ignore[misc]
     return size >= settings.redis.pool_size
 
 

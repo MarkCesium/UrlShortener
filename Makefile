@@ -25,11 +25,11 @@ format:
 	cd services/generator && uv run ruff format .
 
 test:
-	cd services/backend && uv run pytest tests/
-	cd services/generator && uv run pytest tests/
+	cd services/backend && uv run pytest tests/ -v
+	cd services/generator && uv run pytest tests/ -v
 
 check:
-	cd services/backend && uv run ruff check src
-	cd services/backend && uv run mypy src
-	cd services/generator && uv run ruff check src
-	cd services/generator && uv run mypy src
+	cd services/backend && uv run ruff check src tests
+	cd services/backend && uv run mypy src tests
+	cd services/generator && uv run ruff check src tests
+	cd services/generator && uv run mypy src tests

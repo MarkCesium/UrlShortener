@@ -1,11 +1,11 @@
 services:
   database:
     ports:
-      - 5432:5432
+      - "${DATABASE_PORT}:5432"
 
   nats:
     ports:
-      - "4222:4222"
+      - "${NATS_PORT}:4222"
 
   backend:
     build:
@@ -17,7 +17,7 @@ services:
 
   redis:
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
 
   generator:
     build:

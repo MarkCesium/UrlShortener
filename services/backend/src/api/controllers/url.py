@@ -1,13 +1,13 @@
 from litestar import Controller, get, post, status_codes
-from litestar.exceptions.http_exceptions import NotFoundException, HTTPException
 from litestar.di import Provide
+from litestar.exceptions.http_exceptions import HTTPException, NotFoundException
 from litestar.response import Redirect
 
 from src.api.schemas.url import URLCreate, URLRead
 from src.core.models.url import URL
+from src.core.providers import get_broker_service, get_url_service
 from src.core.services.broker import BrokerService
 from src.core.services.url import URLService
-from src.core.providers import get_broker_service, get_url_service
 
 
 class URLController(Controller):
@@ -24,9 +24,7 @@ class URLController(Controller):
         return Redirect(url.original_url, status_code=status_codes.HTTP_302_FOUND)
 
     @post("/shorten")
-    async def create(
-        self, data: URLCreate, service: URLService, broker: BrokerService
-    ) -> URLRead:
+    async def create(self, data: URLCreate, service: URLService, broker: BrokerService) -> URLRead:
         if data.slug is None:
             data.slug = await broker.get_slug()
         else:

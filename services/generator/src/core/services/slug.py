@@ -1,7 +1,7 @@
 import asyncio
-import string
-import secrets
 import logging
+import secrets
+import string
 
 from redis.asyncio import Redis
 

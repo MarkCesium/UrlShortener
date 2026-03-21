@@ -1,6 +1,7 @@
-from typing import Annotated
 from datetime import datetime
-from msgspec import Struct, Meta
+from typing import Annotated
+
+from msgspec import Meta, Struct
 
 Slug = Annotated[str, Meta(min_length=6, max_length=18)]
 

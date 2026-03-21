@@ -1,6 +1,6 @@
+from advanced_alchemy.base import BigIntAuditBase
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
-from advanced_alchemy.base import BigIntAuditBase
 
 
 class URL(BigIntAuditBase):

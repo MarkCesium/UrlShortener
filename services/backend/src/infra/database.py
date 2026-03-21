@@ -1,10 +1,11 @@
 from litestar.plugins.sqlalchemy import (
-    SQLAlchemyPlugin,
-    SQLAlchemyAsyncConfig,
-    EngineConfig,
     AsyncSessionConfig,
+    EngineConfig,
+    SQLAlchemyAsyncConfig,
+    SQLAlchemyPlugin,
 )
-from src.core.config import settings, PostgresConfig
+
+from src.core.config import PostgresConfig, settings
 
 
 def get_db_plugin(config: PostgresConfig) -> SQLAlchemyPlugin:

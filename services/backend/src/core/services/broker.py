@@ -1,4 +1,5 @@
 import logging
+
 from faststream.nats import NatsBroker
 from msgspec import Struct, json
 

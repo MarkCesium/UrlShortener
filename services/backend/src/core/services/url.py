@@ -1,4 +1,5 @@
-from advanced_alchemy import service, repository
+from advanced_alchemy import repository, service
+
 from src.core.models.url import URL
 
 

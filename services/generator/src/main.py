@@ -1,18 +1,18 @@
 import asyncio
-from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 from faststream import FastStream
 from faststream.nats import NatsBroker
 
-from src.handlers.slug import router as slug_router
 from src.core.config import settings
 from src.core.services.slug import is_pool_full, refill_pool
-from src.infra.redis import init_redis, get_redis, close_redis
+from src.handlers.slug import router as slug_router
+from src.infra.redis import close_redis, get_redis, init_redis
 
 
 @asynccontextmanager
-async def lifespan() -> AsyncGenerator[None, None]:
+async def lifespan() -> AsyncGenerator[None]:
     await init_redis()
     redis = await get_redis()
     if not await is_pool_full(redis):

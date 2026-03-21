@@ -7,7 +7,7 @@ from src.core.services.slug import get_slug
 from src.infra.redis import get_redis
 
 
-async def get_slug_dep(redis: Redis = Depends(get_redis)) -> str:
+async def get_slug_dep(redis: Annotated[Redis, Depends(get_redis)]) -> str:
     return await get_slug(redis)
 
 

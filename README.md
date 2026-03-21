@@ -64,3 +64,41 @@ make dev
 ```
 
 `slug` is optional (6–18 characters). If omitted, it is generated automatically.
+
+## Project structure
+
+```
+├── docker-compose.yaml            # base service definitions
+├── docker-compose.dev.yaml        # dev overrides (ports, volumes, hot-reload)
+├── docker-compose.prod.yaml       # prod overrides (restart policies)
+├── Makefile                       # dev, prod, test, check, format, migrate
+├── .env.template                  # root env template (Postgres, ports)
+│
+├── services/backend/
+│   ├── src/
+│   │   ├── main.py                # Litestar app factory, lifespan
+│   │   ├── api/
+│   │   │   ├── controllers/       # HTTP handlers (index, url)
+│   │   │   └── schemas/           # request/response models (msgspec)
+│   │   ├── core/
+│   │   │   ├── config.py          # pydantic-settings configuration
+│   │   │   ├── exceptions/        # AppError hierarchy + handler
+│   │   │   ├── models/            # SQLAlchemy ORM models
+│   │   │   ├── services/          # business logic (url, broker)
+│   │   │   └── providers.py       # DI providers
+│   │   └── infra/                 # broker and database initialization
+│   └── tests/
+│
+└── services/generator/
+    ├── src/
+    │   ├── main.py                # FastStream app, lifespan
+    │   ├── handlers/              # NATS message handlers
+    │   ├── schemas/               # response models (msgspec)
+    │   ├── core/
+    │   │   ├── config.py          # pydantic-settings configuration
+    │   │   ├── exceptions.py      # AppError, PoolExhaustedError
+    │   │   ├── services/          # slug generation + pool management
+    │   │   └── providers.py       # DI providers
+    │   └── infra/                 # Redis initialization
+    └── tests/
+```

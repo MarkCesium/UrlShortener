@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, PostgresDsn
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent.parent
 
@@ -52,10 +52,11 @@ class Settings(BaseSettings):
     database: PostgresConfig
     logging: LoggingConfig
 
-    class Config:
-        env_file = BASE_DIR / ".env"
-        env_file_encoding = "utf-8"
-        env_nested_delimiter = "__"
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+    )
 
 
 settings = Settings()  # type: ignore

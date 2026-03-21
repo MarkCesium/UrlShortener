@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "advanced-alchemy"
-version = "1.8.0"
+version = "1.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alembic" },
@@ -12,9 +12,9 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/c6/6b3b3abfaec99d4a803842591ca796f7b194bfe1e966e749e79fcc26f3b3/advanced_alchemy-1.8.0.tar.gz", hash = "sha256:2a4ff20e8f09c15472196623ab99870e99085466a7ca95aecea3b113f571e67b", size = 909668, upload-time = "2025-10-28T21:01:30.998Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/db/85cc9777dbd23d1193ae68d27a373358b2c67b7929d860ac9a9c1b42f9d5/advanced_alchemy-1.8.2.tar.gz", hash = "sha256:858c60430558306fb0550e247f1afd473afd49a50b17e84f9cb1cdb7987d57ec", size = 920316, upload-time = "2025-12-13T01:05:47.286Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/a3/9c1ffd384f8ed517d0961a230b92dc235b4be45027c57a5290f615358a2f/advanced_alchemy-1.8.0-py3-none-any.whl", hash = "sha256:df3fc0794f3b2288ac84f537e5d2918c70658116de4e2c2e2294778b179cfa70", size = 258817, upload-time = "2025-10-28T21:01:29.163Z" },
+    { url = "https://files.pythonhosted.org/packages/43/d6/483192bcf2d9d6addf1fa5df334f5e85c31361fcffae49a20629471dedc9/advanced_alchemy-1.8.2-py3-none-any.whl", hash = "sha256:37d476ba6db4ffea9fea8e0bc3c6356926c0e49291b8508c96bc2c0e6b27ea3f", size = 259812, upload-time = "2025-12-13T01:05:45.359Z" },
 ]
 
 [[package]]
@@ -319,7 +319,7 @@ wheels = [
 
 [[package]]
 name = "litestar"
-version = "2.18.0"
+version = "2.21.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -333,11 +333,12 @@ dependencies = [
     { name = "pyyaml" },
     { name = "rich" },
     { name = "rich-click" },
+    { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c9/75/e0c286719860bc63459dd3364616bb436aecfbd8ab26f212a3a7957a551f/litestar-2.18.0.tar.gz", hash = "sha256:be8f91813854722b7a2f37cbb57d76977050a96b2427d3c4455d406f0f4fcd50", size = 372890, upload-time = "2025-10-05T16:24:00.094Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/fc/7ce2057ffd738be4d2abc5b69229f57181bbff8a84a4576004b021085773/litestar-2.21.1.tar.gz", hash = "sha256:28301438de7c5e77bb68a5d8684dff415b9f252b0dd8413b356e8e6794c6863a", size = 376270, upload-time = "2026-03-07T13:49:16.053Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/ec/76d3e07db8bac2f3248acb8879c7a8ba6b6c96e846c40d8474d1a0f79160/litestar-2.18.0-py3-none-any.whl", hash = "sha256:459ec993bafe47245c981d802a0a0c73f47c98313b3c4e47923eebe978f0e511", size = 564603, upload-time = "2025-10-05T16:23:58.439Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/67/139c0fa6e1dd9e558910c02a383cd0ae12c2a1d6d3f0ea0d42dbeb03d8b2/litestar-2.21.1-py3-none-any.whl", hash = "sha256:6321340195801454aeac4a12e72c28f54714a4c3e8172c33e577c593cc5982c6", size = 568342, upload-time = "2026-03-07T13:49:13.694Z" },
 ]
 
 [[package]]

@@ -1,9 +1,9 @@
 from litestar import Controller, get, post, status_codes
 from litestar.di import Provide
-from litestar.exceptions.http_exceptions import HTTPException, NotFoundException
 from litestar.response import Redirect
 
 from src.api.schemas.url import URLCreate, URLRead
+from src.core.exceptions import ConflictError, NotFoundError
 from src.core.models.url import URL
 from src.core.providers import get_broker_service, get_url_service
 from src.core.services.broker import BrokerService
@@ -20,7 +20,7 @@ class URLController(Controller):
     async def redirect(self, slug: str, service: URLService) -> Redirect:
         url = await service.get_one_or_none(URL.slug == slug)
         if url is None:
-            raise NotFoundException(f"URL with slug: {slug} not found")
+            raise NotFoundError(f"URL with slug: {slug} not found")
         return Redirect(url.original_url, status_code=status_codes.HTTP_302_FOUND)
 
     @post("/shorten")
@@ -29,9 +29,6 @@ class URLController(Controller):
             data.slug = await broker.get_slug()
         else:
             if await service.get_one_or_none(URL.slug == data.slug) is not None:
-                raise HTTPException(
-                    status_code=status_codes.HTTP_409_CONFLICT,
-                    detail=f"URL with slug: {data.slug} already exists",
-                )
+                raise ConflictError(f"URL with slug: {data.slug} already exists")
         entity = await service.create(data)
         return service.to_schema(entity, schema_type=URLRead)

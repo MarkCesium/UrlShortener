@@ -3,6 +3,8 @@ import logging
 from faststream.nats import NatsBroker
 from msgspec import Struct, json
 
+from src.core.exceptions import AppError
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,5 +22,5 @@ class BrokerService:
             schema = json.decode(msg.body, type=Slug)
             return schema.slug
         except Exception as e:
-            logger.exception(e)
-            raise e
+            logger.exception("Failed to get slug from generator")
+            raise AppError("Failed to generate slug") from e

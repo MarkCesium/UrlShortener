@@ -1,0 +1,19 @@
+services:
+  database:
+    restart: unless-stopped
+
+  nats:
+    restart: unless-stopped
+
+  backend:
+    restart: unless-stopped
+    volumes:
+      - ./var/backend:/backend/var/app
+
+  redis:
+    restart: unless-stopped
+
+  generator:
+    restart: unless-stopped
+    volumes:
+      - ./var/generator:/generator/var/app

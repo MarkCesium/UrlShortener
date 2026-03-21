@@ -2,14 +2,12 @@ services:
   database:
     container_name: urlshortener-database
     image: postgres:17-bookworm
-    environment: 
+    environment:
       POSTGRES_USER: urlshortener
       POSTGRES_PASSWORD: urlpassword123
       POSTGRES_DB: urlshortener
     networks:
       - urlshortener
-    ports:
-      - 5432:5432
     volumes:
       - ./var/postgresql:/var/lib/postgresql/data
     healthcheck:
@@ -17,14 +15,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  
+
   nats:
     image: nats:latest
     container_name: urlshortener-nats
     networks:
       - urlshortener
-    ports:
-      - "4222:4222"
     volumes:
       - ./var/nats:/data
     command: >
@@ -38,19 +34,15 @@ services:
       - nats
     networks:
       - urlshortener
-    volumes:
-      - ./var/backend:/backend/var/app
     build:
       context: ./services/backend
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile
     ports:
       - 8000:8000
 
   redis:
     container_name: urlshortener-redis
     image: redis:bookworm
-    ports:
-      - "6379:6379"
     volumes:
       - ./var/redis:/data
     networks:
@@ -63,11 +55,9 @@ services:
     networks:
       - urlshortener
       - redis-network
-    volumes:
-      - ./var/generator:/generator/var/app
     build:
       context: ./services/generator
-      dockerfile: Dockerfile 
+      dockerfile: Dockerfile
 
 networks:
   urlshortener:

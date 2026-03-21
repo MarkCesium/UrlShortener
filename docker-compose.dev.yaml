@@ -1,0 +1,22 @@
+services:
+  database:
+    ports:
+      - 5432:5432
+
+  nats:
+    ports:
+      - "4222:4222"
+
+  backend:
+    volumes:
+      - ./services/backend/src:/backend/src
+      - ./var/backend:/backend/var/app
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  generator:
+    volumes:
+      - ./services/generator/src:/generator/src
+      - ./var/generator:/generator/var/app

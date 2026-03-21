@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -13,6 +14,11 @@ from src.infra.redis import close_redis, get_redis, init_redis
 
 @asynccontextmanager
 async def lifespan() -> AsyncGenerator[None]:
+    logging.basicConfig(
+        level=settings.logging.level_value,
+        format=settings.logging.format,
+        datefmt=settings.logging.date_format,
+    )
     await init_redis()
     redis = await get_redis()
     if not await is_pool_full(redis):
@@ -22,7 +28,7 @@ async def lifespan() -> AsyncGenerator[None]:
     await close_redis()
 
 
-async def main():
+async def main() -> None:
     broker = NatsBroker(settings.broker.url)
     app = FastStream(broker, lifespan=lifespan)
     broker.include_router(slug_router)

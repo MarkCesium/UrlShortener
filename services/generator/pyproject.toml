@@ -10,3 +10,38 @@ dependencies = [
     "pydantic-settings>=2.12.0",
     "redis[hiredis]>=7.1.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff",
+    "mypy",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+extend-select = ["I"]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "C4",
+]
+
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true

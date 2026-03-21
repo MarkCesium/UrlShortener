@@ -1,4 +1,4 @@
-.PHONY: dev prod down logs migration migrate format check
+.PHONY: dev prod down logs migration migrate format check test
 
 dev:
 	docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build
@@ -23,6 +23,10 @@ format:
 	cd services/backend && uv run ruff format .
 	cd services/generator && uv run ruff check --fix .
 	cd services/generator && uv run ruff format .
+
+test:
+	cd services/backend && uv run pytest tests/
+	cd services/generator && uv run pytest tests/
 
 check:
 	cd services/backend && uv run ruff check src

@@ -18,6 +18,9 @@ dependencies = [
 dev = [
     "ruff",
     "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
 ]
 
 [tool.uv]
@@ -44,6 +47,9 @@ ignore = []
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [tool.mypy]
 python_version = "3.14"

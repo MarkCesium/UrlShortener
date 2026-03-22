@@ -6,4 +6,4 @@ class Index(Struct):
     author: str
     repository: str
     debug: bool
-    swagger: str | None
+    swagger: str

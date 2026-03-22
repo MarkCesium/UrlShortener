@@ -11,5 +11,5 @@ async def index() -> Index:
         author="MarkCesium",
         repository="https://github.com/MarkCesium/UrlShortener",
         debug=settings.app.debug,
-        swagger=settings.app.domain + "/schema" if settings.app.debug else None,
+        swagger=settings.app.domain + "/schema",
     )

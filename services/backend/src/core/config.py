@@ -43,7 +43,6 @@ class NatsConfig(BaseModel):
 class AppConfig(BaseModel):
     debug: bool = False
     domain: str = "http://[::]:8000"
-    generate_openapi: bool = False
 
 
 class Settings(BaseSettings):

@@ -39,8 +39,6 @@ services:
     build:
       context: ./services/backend
       dockerfile: Dockerfile
-    ports:
-      - "${BACKEND_PORT}:8000"
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/\")'"]
       interval: 10s

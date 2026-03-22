@@ -11,6 +11,8 @@ services:
     build:
       context: ./services/backend
       dockerfile: Dockerfile.dev
+    ports:
+      - "${BACKEND_PORT}:8000"
     volumes:
       - ./services/backend/src:/backend/src
       - ./var/backend:/backend/var/app

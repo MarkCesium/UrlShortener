@@ -3,6 +3,12 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - "services/**"
+      - "docker-compose*.yaml"
+      - "Makefile"
+      - ".env.template"
+      - ".github/workflows/**"
 
 jobs:
   ci:

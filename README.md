@@ -65,12 +65,20 @@ make dev
 
 `slug` is optional (6–18 characters). If omitted, it is generated automatically.
 
+## Deployment
+
+The service is deployed on a VPS behind [Traefik](https://traefik.io/) reverse proxy with automatic HTTPS (Let's Encrypt).
+
+**CI/CD:** GitHub Actions — push to `main` triggers lint/typecheck/tests, then deploys via SSH (`docker compose up -d --build`).
+
+**Required GitHub Secrets:** `HOST`, `USERNAME`, `PRIVATE_KEY`.
+
 ## Project structure
 
 ```
 ├── docker-compose.yaml            # base service definitions
 ├── docker-compose.dev.yaml        # dev overrides (ports, volumes, hot-reload)
-├── docker-compose.prod.yaml       # prod overrides (restart policies)
+├── docker-compose.prod.yaml       # prod overrides (restart, Traefik labels)
 ├── Makefile                       # dev, prod, test, check, format, migrate
 ├── .env.template                  # root env template (Postgres, ports)
 │

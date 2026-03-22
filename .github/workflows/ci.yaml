@@ -21,6 +21,7 @@ jobs:
         with:
           enable-cache: true
 
+      - run: cp .env.template .env
       - run: uv sync
 
       - name: Ruff
@@ -46,6 +47,7 @@ jobs:
         with:
           enable-cache: true
 
+      - run: cp .env.template .env
       - run: uv sync
 
       - name: Ruff

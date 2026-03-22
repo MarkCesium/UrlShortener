@@ -26,11 +26,6 @@ services:
     command: >
       --jetstream
       --store_dir=/data
-    healthcheck:
-      test: ["CMD", "nats-server", "--signal", "ldm"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
     container_name: urlshortener-backend
@@ -38,7 +33,7 @@ services:
       database:
         condition: service_healthy
       nats:
-        condition: service_healthy
+        condition: service_started
     networks:
       - urlshortener
     build:
@@ -70,7 +65,7 @@ services:
     container_name: urlshortener-generator
     depends_on:
       nats:
-        condition: service_healthy
+        condition: service_started
       redis:
         condition: service_healthy
     networks:

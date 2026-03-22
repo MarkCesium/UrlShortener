@@ -10,6 +10,7 @@ services:
       - urlshortener
     volumes:
       - ./var/postgresql:/var/lib/postgresql/data
+      - ./scripts/init-cessecrets-db.sh:/docker-entrypoint-initdb.d/init-cessecrets-db.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
@@ -75,6 +76,7 @@ services:
 
 networks:
   urlshortener:
+    name: urlshortener-network
     driver: bridge
   redis-network:
     driver: bridge

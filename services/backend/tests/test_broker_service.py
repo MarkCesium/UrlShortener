@@ -32,7 +32,7 @@ async def test_get_slug_returns_decoded_slug(
     result = await broker_service.get_slug()
 
     assert result == "abc123"
-    mock_nats_broker.request.assert_awaited_once_with(None, "slug.get")
+    mock_nats_broker.request.assert_awaited_once_with(None, "slug.get", timeout=5)
 
 
 async def test_get_slug_raises_app_error_on_failure(

@@ -18,7 +18,7 @@ class BrokerService:
 
     async def get_slug(self) -> str:
         try:
-            msg = await self.broker.request(None, "slug.get")
+            msg = await self.broker.request(None, "slug.get", timeout=5)
             schema = json.decode(msg.body, type=Slug)
             return schema.slug
         except Exception as e:

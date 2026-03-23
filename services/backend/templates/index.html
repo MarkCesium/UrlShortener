@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%234a85f0'><path d='M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9.4a2 2 0 0 1-1.4.58H5a2 2 0 1 1 0-4h1.354zM9.646 10.5H12a3 3 0 1 0 0-6H9a3 3 0 0 0-2.83 4h.54A2 2 0 0 1 8.1 5.42H11a2 2 0 1 1 0 4H9.646z'/></svg>">
+    <script>
+        (function() {
+            var saved = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        button { font-family: inherit; }
+
+        :root {
+            --c-bg: #f8f9fa;
+            --c-surface: #ffffff;
+            --c-text: #111827;
+            --c-muted: #6b7280;
+            --c-accent: #4a85f0;
+            --c-accent-hover: #3b6fd4;
+            --c-border: #e5e7eb;
+            --c-danger: #e85a4f;
+            --c-danger-bg: rgba(232,90,79,.08);
+            --c-success-bg: rgba(34,197,94,.08);
+            --c-success: #22c55e;
+            --radius: 8px;
+            --shadow: 0 1px 3px rgba(0,0,0,.08);
+        }
+
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+
+        @supports not (view-transition-name: root) {
+            *,
+            *::before,
+            *::after {
+                transition: background-color .4s ease, color .4s ease, border-color .4s ease !important;
+            }
+        }
+
+        html.dark {
+            --c-bg: #111117;
+            --c-surface: #1c1c24;
+            --c-text: #e5e7eb;
+            --c-muted: #9ca3af;
+            --c-accent: #6b9ff6;
+            --c-accent-hover: #5a8de0;
+            --c-border: #2d2d3a;
+            --c-danger: #f87171;
+            --c-danger-bg: rgba(248,113,113,.1);
+            --c-success-bg: rgba(34,197,94,.1);
+            --c-success: #4ade80;
+            --shadow: 0 1px 3px rgba(0,0,0,.3);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--c-bg);
+            color: var(--c-text);
+            line-height: 1.5;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            right: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--c-muted);
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: color .2s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--c-text);
+        }
+
+        .theme-toggle svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: currentColor;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--c-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .35s ease-out both;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--c-muted);
+        }
+
+        label .optional {
+            font-weight: 400;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--c-text);
+            background: var(--c-bg);
+            transition: border-color .15s, box-shadow .15s;
+            margin-bottom: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--c-accent);
+            box-shadow: 0 0 0 3px rgba(74,133,240,.12);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.6rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #fff;
+            background: var(--c-accent);
+            border: 1px solid var(--c-accent);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background .15s, border-color .15s, transform .15s, box-shadow .15s;
+        }
+
+        .btn:hover {
+            background: var(--c-accent-hover);
+            border-color: var(--c-accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(74,133,240,.25);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.45rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--c-muted);
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color .15s, border-color .15s, background .15s;
+        }
+
+        .btn-secondary:hover {
+            color: var(--c-text);
+            border-color: var(--c-accent);
+            text-decoration: none;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown .3s ease-out;
+        }
+
+        .alert-danger {
+            background: var(--c-danger-bg);
+            color: var(--c-danger);
+            border: 1px solid rgba(232,90,79,.2);
+        }
+
+        .alert-success {
+            background: var(--c-success-bg);
+            color: var(--c-success);
+            border: 1px solid rgba(34,197,94,.2);
+        }
+
+        .alert button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: inherit;
+            padding: 0 0 0 0.75rem;
+            line-height: 1;
+        }
+
+        .result {
+            padding: 1rem;
+            background: var(--c-bg);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .result a {
+            color: var(--c-accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            word-break: break-all;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+        .copy-btn { margin-top: 0.75rem; }
+        .btn-secondary.copied,
+        .btn-secondary.copied:hover {
+            color: var(--c-success);
+            border-color: var(--c-success);
+        }
+
+        .success-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--c-success);
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        a { color: var(--c-accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--c-muted);
+        }
+
+        footer a { color: var(--c-muted); }
+        footer a:hover { color: var(--c-accent); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>URL Shortener</h1>
+        <button class="theme-toggle" onclick="toggleTheme(event)" id="themeBtn" aria-label="Toggle theme"></button>
+    </div>
+    <p class="subtitle">Shorten your links instantly</p>
+
+    <div id="alert-container"></div>
+
+    <div class="card">
+        <form id="shorten-form">
+            <label for="url">URL to shorten</label>
+            <input type="url" id="url" placeholder="https://example.com/very/long/url" required>
+            <label for="slug">Custom slug <span class="optional">(optional, 6-18 characters)</span></label>
+            <input type="text" id="slug" placeholder="my-custom-slug" minlength="6" maxlength="18">
+            <button type="submit" class="btn">Shorten</button>
+        </form>
+    </div>
+
+    <div id="result-card" class="card" style="display:none">
+        <div class="success-header">Short URL created</div>
+        <div class="result">
+            <a id="short-url" href="" target="_blank"></a>
+        </div>
+        <button class="btn-secondary copy-btn" id="copy-btn">Copy to clipboard</button>
+    </div>
+</div>
+<footer>
+    Written by <a href="https://github.com/MarkCesium/UrlShortener" target="_blank" rel="noopener"><svg height="14" width="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:2px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>MarkCesium</a>
+    &middot;
+    <a href="{{ domain }}/schema" target="_blank" rel="noopener">API Docs</a>
+</footer>
+<script>
+var DOMAIN = {{ domain | tojson }};
+
+var sunSVG = '<svg viewBox="0 0 24 24"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></svg>';
+var moonSVG = '<svg viewBox="0 0 24 24"><path d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75 9.75 9.75 0 0 1 8.25 6c0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25 9.75 9.75 0 0 0 12.75 21a9.753 9.753 0 0 0 8.998-5.998z"/></svg>';
+
+function applyThemeIcon() {
+    var isDark = document.documentElement.classList.contains('dark');
+    document.getElementById('themeBtn').innerHTML = isDark ? sunSVG : moonSVG;
+}
+
+function applyTheme() {
+    document.documentElement.classList.toggle('dark');
+    var isDark = document.documentElement.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    applyThemeIcon();
+}
+
+function toggleTheme(event) {
+    if (!document.startViewTransition || !event) {
+        applyTheme();
+        return;
+    }
+
+    var x = event.clientX;
+    var y = event.clientY;
+    var radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+    );
+
+    var transition = document.startViewTransition(applyTheme);
+    transition.ready.then(function() {
+        document.documentElement.animate(
+            { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + radius + 'px at ' + x + 'px ' + y + 'px)'] },
+            { duration: 600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' }
+        );
+    });
+}
+
+applyThemeIcon();
+
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function showAlert(message, category) {
+    var container = document.getElementById('alert-container');
+    container.innerHTML = '';
+    var div = document.createElement('div');
+    div.className = 'alert alert-' + category;
+    div.innerHTML = '<span>' + escapeHtml(message) + '</span><button onclick="this.parentElement.remove()" aria-label="Close">&times;</button>';
+    container.appendChild(div);
+}
+
+function copyText(text, btn) {
+    function onSuccess() {
+        var orig = btn.textContent;
+        btn.classList.add('copied');
+        btn.textContent = 'Copied!';
+        setTimeout(function() {
+            btn.classList.remove('copied');
+            btn.textContent = orig;
+        }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onSuccess);
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        onSuccess();
+    }
+}
+
+document.getElementById('copy-btn').addEventListener('click', function() {
+    copyText(document.getElementById('short-url').textContent, this);
+});
+
+document.getElementById('shorten-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    var btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Shortening...';
+
+    document.getElementById('alert-container').innerHTML = '';
+    document.getElementById('result-card').style.display = 'none';
+
+    var url = document.getElementById('url').value.trim();
+    var slug = document.getElementById('slug').value.trim();
+    var body = { original_url: url };
+    if (slug) body.slug = slug;
+
+    try {
+        var resp = await fetch('/shorten', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+        var data = await resp.json();
+
+        if (!resp.ok) {
+            var msg = Array.isArray(data.detail)
+                ? data.detail.map(function(d) { return d.message || d; }).join(', ')
+                : (data.detail || 'Something went wrong');
+            showAlert(msg, 'danger');
+        } else {
+            var shortUrl = DOMAIN + '/' + data.slug;
+            document.getElementById('short-url').href = shortUrl;
+            document.getElementById('short-url').textContent = shortUrl;
+            document.getElementById('result-card').style.display = '';
+        }
+    } catch (err) {
+        showAlert('Network error. Please try again.', 'danger');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Shorten';
+    }
+});
+</script>
+</body>
+</html>

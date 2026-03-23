@@ -24,11 +24,14 @@ async def lifespan(app: Litestar) -> AsyncGenerator[None]:
 
 
 def create_app() -> Litestar:
+    from litestar.contrib.jinja import JinjaTemplateEngine
     from litestar.openapi.config import OpenAPIConfig
     from litestar.openapi.plugins import SwaggerRenderPlugin
+    from litestar.template.config import TemplateConfig
 
     from src.api.controllers.index import index
     from src.api.controllers.url import URLController
+    from src.core.config import BASE_DIR
 
     return Litestar(
         debug=settings.app.debug,
@@ -43,6 +46,10 @@ def create_app() -> Litestar:
             description="URL Shortener API",
             version="0.1.0",
             render_plugins=[SwaggerRenderPlugin()],
+        ),
+        template_config=TemplateConfig(
+            directory=BASE_DIR / "templates",
+            engine=JinjaTemplateEngine,
         ),
     )
 

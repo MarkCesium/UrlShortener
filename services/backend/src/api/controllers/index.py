@@ -1,15 +1,9 @@
 from litestar import get
+from litestar.response import Template
 
-from src.api.schemas.index import Index
 from src.core.config import settings
 
 
-@get("/")
-async def index() -> Index:
-    return Index(
-        name="Url Shortener",
-        author="MarkCesium",
-        repository="https://github.com/MarkCesium/UrlShortener",
-        debug=settings.app.debug,
-        swagger=settings.app.domain + "/schema",
-    )
+@get("/", include_in_schema=False)
+async def index() -> Template:
+    return Template(template_name="index.html", context={"domain": settings.app.domain})

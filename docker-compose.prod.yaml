@@ -28,9 +28,6 @@ services:
     networks:
       - urlshortener
       - shared-network
-    depends_on:
-      nats:
-        condition: service_started
 
 networks:
   traefik-network:

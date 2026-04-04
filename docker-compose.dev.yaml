@@ -25,6 +25,11 @@ services:
     build:
       context: ./services/generator
       dockerfile: Dockerfile.dev
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - redis-network
     volumes:
       - ./services/generator/src:/generator/src
       - ./var/generator:/generator/var/app

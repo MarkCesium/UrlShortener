@@ -66,11 +66,8 @@ services:
     depends_on:
       nats:
         condition: service_started
-      redis:
-        condition: service_healthy
     networks:
       - urlshortener
-      - redis-network
     build:
       context: ./services/generator
       dockerfile: Dockerfile

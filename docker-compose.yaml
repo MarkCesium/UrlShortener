@@ -1,23 +1,4 @@
 services:
-  database:
-    container_name: urlshortener-database
-    image: postgres:17-bookworm
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    networks:
-      - urlshortener
-    volumes:
-      - ./var/postgresql:/var/lib/postgresql/data
-      - ./scripts/init-cessecrets-db.sh:/docker-entrypoint-initdb.d/init-cessecrets-db.sh:ro
-      - ./scripts/init-slouka-db.sh:/docker-entrypoint-initdb.d/init-slouka-db.sh:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   nats:
     image: nats:latest
     container_name: urlshortener-nats
@@ -31,11 +12,6 @@ services:
 
   backend:
     container_name: urlshortener-backend
-    depends_on:
-      database:
-        condition: service_healthy
-      nats:
-        condition: service_started
     networks:
       - urlshortener
     build:
@@ -47,19 +23,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
-  redis:
-    container_name: urlshortener-redis
-    image: redis:bookworm
-    volumes:
-      - ./var/redis:/data
-    networks:
-      - redis-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   generator:
     container_name: urlshortener-generator
@@ -75,6 +38,4 @@ services:
 networks:
   urlshortener:
     name: urlshortener-network
-    driver: bridge
-  redis-network:
     driver: bridge

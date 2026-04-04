@@ -1,7 +1,4 @@
 services:
-  database:
-    restart: unless-stopped
-
   nats:
     restart: unless-stopped
 
@@ -11,15 +8,13 @@ services:
       - ./var/backend:/backend/var/app
     networks:
       - traefik-network
+      - shared-network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.urlshortener.rule=Host(`csmmark.me`)"
       - "traefik.http.routers.urlshortener.entrypoints=websecure"
       - "traefik.http.routers.urlshortener.tls.certresolver=letsencrypt"
       - "traefik.http.services.urlshortener.loadbalancer.server.port=8000"
-
-  redis:
-    profiles: [disabled]
 
   generator:
     restart: unless-stopped

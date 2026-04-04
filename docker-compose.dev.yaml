@@ -1,7 +1,22 @@
 services:
   database:
+    container_name: urlshortener-database
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - urlshortener
     ports:
       - "${DATABASE_PORT}:5432"
+    volumes:
+      - ./var/postgresql:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   nats:
     ports:
@@ -11,6 +26,11 @@ services:
     build:
       context: ./services/backend
       dockerfile: Dockerfile.dev
+    depends_on:
+      database:
+        condition: service_healthy
+      nats:
+        condition: service_started
     ports:
       - "${BACKEND_PORT}:8000"
     volumes:
@@ -18,8 +38,19 @@ services:
       - ./var/backend:/backend/var/app
 
   redis:
+    container_name: urlshortener-redis
+    image: redis:bookworm
+    volumes:
+      - ./var/redis:/data
+    networks:
+      - redis-network
     ports:
       - "${REDIS_PORT}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   generator:
     build:
@@ -33,3 +64,7 @@ services:
     volumes:
       - ./services/generator/src:/generator/src
       - ./var/generator:/generator/var/app
+
+networks:
+  redis-network:
+    driver: bridge

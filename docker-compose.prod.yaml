@@ -19,13 +19,22 @@ services:
       - "traefik.http.services.urlshortener.loadbalancer.server.port=8000"
 
   redis:
-    restart: unless-stopped
+    profiles: [disabled]
 
   generator:
     restart: unless-stopped
     volumes:
       - ./var/generator:/generator/var/app
+    networks:
+      - urlshortener
+      - shared-network
+    depends_on:
+      nats:
+        condition: service_started
 
 networks:
   traefik-network:
     external: true
+  shared-network:
+    external: true
+    name: shared-network
